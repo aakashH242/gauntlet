@@ -1,0 +1,58 @@
+{
+  "passed": 7,
+  "total": 9,
+  "results": [
+    {
+      "name": "zero and false",
+      "expected": "0,false",
+      "actual": ",",
+      "pass": false
+    },
+    {
+      "name": "nullish and empty",
+      "expected": ",,",
+      "actual": ",,",
+      "pass": true
+    },
+    {
+      "name": "carriage return",
+      "expected": "\"a\rb\"",
+      "actual": "a\rb",
+      "pass": false
+    },
+    {
+      "name": "CRLF in cell",
+      "expected": "\"a\r\nb\"",
+      "actual": "\"a\r\nb\"",
+      "pass": true
+    },
+    {
+      "name": "LF in cell",
+      "expected": "\"a\nb\"",
+      "actual": "\"a\nb\"",
+      "pass": true
+    },
+    {
+      "name": "comma and quotes",
+      "expected": "\"a,b\",\"\"\"\"",
+      "actual": "\"a,b\",\"\"\"\"",
+      "pass": true
+    },
+    {
+      "name": "record separators",
+      "expected": "x\r\ny",
+      "actual": "x\r\ny",
+      "pass": true
+    },
+    {
+      "name": "empty matrix",
+      "expected": "",
+      "actual": "",
+      "pass": true
+    },
+    {
+      "name": "input immutability",
+      "pass": true
+    }
+  ]
+}

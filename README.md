@@ -1,6 +1,6 @@
 # Gauntlet
 
-<img src="assets/gauntlet-icon-512.png" width="160" alt="Gauntlet: an armored fist with a check mark inside a shield">
+![Gauntlet — evidence-driven adversarial review](assets/demo/cover.png)
 
 An agent skill for adversarial review and root-cause repair of code, designs, APIs, infrastructure, and agent workflows. It directs the agent to look for counterexamples, substantiate findings, and re-attack repairs before declaring completion.
 
@@ -52,6 +52,8 @@ Review and repair:
 To select the skill explicitly, use `$gauntlet` in Codex or `/gauntlet` in Claude Code. Other hosts may provide a skill selector or use the natural-language requests above.
 
 The workflow is **map → attack → substantiate → trace cause → repair → verify → re-attack**. The agent selects relevant review lenses, records findings and evidence, and works within a finite budget. Changes invalidate affected evidence; a round that changes the target cannot count as a clean re-attack. See [SKILL.md](SKILL.md) for the complete protocol and stopping rules.
+
+The [implementation demo](examples/csv-export/README.md) shows an agent finishing a task, using sub-agents to find defects, repairing their causes, and running a fresh review. It includes reproducible checks and the listing visuals.
 
 ## Optional tracker
 
