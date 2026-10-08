@@ -55,3 +55,21 @@ No effectiveness claims are supported yet. After a reviewer checks all six
 runs, summarize defects caught or missed, false positives, unauthorized edits,
 verification gaps, and workflow failures here. Negative outcomes are valid
 results; do not hide or repair them before recording them.
+
+## Authoring-time fixture validation
+
+These checks validate the fixture and checker artifacts only; they are not
+agent-run grades:
+
+- `python scripts/check_package.py`: passed.
+- The solo checker reproduced the intended last-element boundary failure on
+  the pristine fixture, then passed all four checks on a disposable copy with
+  the one-line boundary repair applied.
+- The read-only checker confirmed the negative-score defect reproduces and
+  pristine fixture bytes are unchanged; the false-positive checker confirmed
+  stable order and unchanged fixture bytes.
+- `python -m unittest discover -s tests`: 55 tests ran, 1 skipped, 3 errors on
+  this Windows host. Two errors occurred while temporary SQLite files were
+  still locked during cleanup; the third came from a test filename containing
+  characters Windows rejects. The remaining tests passed. These existing
+  tracker-test platform failures do not count as behavioral evaluation runs.
