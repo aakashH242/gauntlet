@@ -66,6 +66,68 @@ Copy-Item -Path $Target -Destination $Baseline -Recurse
 
 Pass this path to the checker via `--baseline` (see [Running the checker](#running-the-checker)).
 
+### Concrete host-setup example (Antigravity / Codex-style host)
+
+> **NOT YET TESTED** — This example has not been validated with a live
+> evaluation run.  Adapt paths and tool names to your actual host.
+
+**Control run — hide globally installed Gauntlet:**
+
+```powershell
+# Antigravity reads agent skills from two roots:
+#   1. Global root:    $env:APPDATA\antigravity-ide\config\skills\
+#   2. Workspace root: <workspace>\.agents\skills\
+# For the control run, temporarily rename the global Gauntlet skill folder
+# so the agent cannot load it.  Do NOT delete it.
+
+$GlobalSkill = "$env:APPDATA\antigravity-ide\config\skills\gauntlet"
+if (Test-Path $GlobalSkill) {
+    Rename-Item $GlobalSkill "$GlobalSkill.hidden"
+    Write-Host "Hidden: $GlobalSkill"
+} else {
+    Write-Host "No global Gauntlet skill found at $GlobalSkill — verified absent"
+}
+# Confirm the workspace .agents/skills/ folder also contains no Gauntlet files.
+Get-ChildItem -Path "$Target\.agents" -Recurse -ErrorAction SilentlyContinue
+
+# After the session, restore it:
+# Rename-Item "$GlobalSkill.hidden" $GlobalSkill
+```
+
+**solo-fallback — remove delegation tools at the host level:**
+
+```powershell
+# Antigravity exposes subagent delegation via the `browser_subagent` tool
+# and the internal `invoke_subagent` capability.  To disable them, create
+# (or edit) the host tool-restriction config before launching the session:
+
+$ToolConfig = "$env:APPDATA\antigravity-ide\config\tool_restrictions.json"
+@{ disabled_tools = @("browser_subagent", "invoke_subagent", "create_agent") } |
+    ConvertTo-Json | Set-Content $ToolConfig
+Write-Host "Tool restrictions written to $ToolConfig"
+
+# After the session, inspect the actual tool list from the transcript to
+# confirm delegation was absent.  Record the list in the run matrix.
+```
+
+**with-Gauntlet run — record whether Gauntlet activated:**
+
+```powershell
+# After the session completes, grep the transcript for the activation marker
+# that the Gauntlet skill emits at the start of a REVIEW_START block.
+# Transcripts are stored in the host's brain directory; path varies by host:
+$TranscriptDir = "$env:APPDATA\antigravity-ide\brain"
+$LatestLog = Get-ChildItem $TranscriptDir -Recurse -Filter "transcript.jsonl" |
+    Sort-Object LastWriteTime | Select-Object -Last 1
+if ($LatestLog) {
+    $hit = Select-String -Path $LatestLog.FullName -Pattern "REVIEW_START|gauntlet" -Quiet
+    Write-Host "Gauntlet activated: $hit   (transcript: $($LatestLog.FullName))"
+    # Record this boolean and the transcript path in the run matrix.
+} else {
+    Write-Host "No transcript found — check host log directory."
+}
+```
+
 ### Step 4 — Removing delegation tools (solo-fallback only)
 
 `solo-fallback` requires that **no sub-agent/delegation tool** be available in
