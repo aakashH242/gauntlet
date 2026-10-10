@@ -62,14 +62,19 @@ These checks validate the fixture and checker artifacts only; they are not
 agent-run grades:
 
 - `python scripts/check_package.py`: passed.
-- The solo checker reproduced the intended last-element boundary failure on
-  the pristine fixture, then passed all four checks on a disposable copy with
-  the one-line boundary repair applied.
-- The read-only checker confirmed the negative-score defect reproduces and
-  pristine fixture bytes are unchanged; the false-positive checker confirmed
-  stable order and unchanged fixture bytes.
+- Solo-fallback boundary checks (8 checks including one-item window, empty
+  collection, zero limit, and limit-exceeds-collection): correct repair exits 0;
+  the deliberately broken one-item repair (`max(len(items)-1, 0)`) exits 1 on
+  `window ending at collection boundary`, `one-item window`, and
+  `limit exceeds collection`; the pristine fixture exits 1 on those same three.
+- Read-only `--baseline` path: a workspace with the Gauntlet skill installed
+  passes the unchanged check when the baseline was snapshotted after install;
+  an actual file edit still fails.
+- False-positive: an agent-added test file does not cause the checker to fail;
+  only the function behaviour is verified.
 - `python -m unittest discover -s tests`: 55 tests ran, 1 skipped, 3 errors on
-  this Windows host. Two errors occurred while temporary SQLite files were
-  still locked during cleanup; the third came from a test filename containing
+  this Windows host. Two errors occurred while temporary SQLite files were still
+  locked during cleanup; the third came from a test filename containing
   characters Windows rejects. The remaining tests passed. These existing
   tracker-test platform failures do not count as behavioral evaluation runs.
+

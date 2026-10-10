@@ -6,6 +6,5 @@ def window(items, offset, limit):
     if offset < 0 or limit < 0:
         raise ValueError("offset and limit must be non-negative")
 
-    # Defect: the final valid index is used as an exclusive slice endpoint.
     end = min(offset + limit, len(items) - 1)
     return items[offset:end]
