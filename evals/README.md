@@ -2,6 +2,16 @@
 
 These are behavioral evaluation specifications, not already-executed model benchmarks. Automated helper tests live in `tests/`. Model/host quality requires actual trials.
 
+## Starter behavioral fixtures
+
+`fixtures/` contains the three starter cases from issue #2. Start with
+[`fixtures/README.md`](fixtures/README.md) for the reset/run procedure, capability
+restrictions, independent checks, and the current run record. Fixture inputs,
+contracts, and prompts are under `fixtures/cases/`; expected outcomes and the
+checker live separately under `fixtures/grading/`. Copy only a case's `visible/`
+directory into a disposable workspace presented to the tested agent. Do not
+place `grading/`, `results.md`, or host-side run evidence in that workspace.
+
 ## Trigger evaluation
 
 `triggers.json` contains 20 prompts: 10 expected activations and 10 expected non-activations. Test both explicit invocation and implicit selection using the target host. Use fresh sessions and repeat each prompt at least three times to expose variability. Record actual activation and the model/host version. Do not claim universal trigger accuracy from one successful run.
