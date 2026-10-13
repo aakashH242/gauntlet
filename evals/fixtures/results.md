@@ -1,0 +1,80 @@
+# Issue #2 starter evaluation record
+
+Status: **fixtures prepared; agent evaluation not run**.
+
+The authoring shell cannot launch six fresh, matched Codex sessions or configure
+the control sessions to hide the skill while holding model, tools, and budget
+constant. No behavioral run or reviewer grading is claimed. `unknown` is not a
+pass. Run transcripts and ledgers belong outside this repository; add only
+redacted evidence references here.
+
+## Run matrix
+
+Fill every row after the session. Pair each with/without run on the same host,
+model/version, tool set, and budget. Record actual outcomes, not intended ones.
+
+| ID | Case / mode | Skill revision | Host / build | Model / version | Tools and restrictions | Budget | Outcome / evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SF-G | solo-fallback / with Gauntlet | pending | pending | pending | no sub-agent tool required | pending | not run |
+| SF-C | solo-fallback / control | none | pending | pending | match SF-G; no sub-agent tool | pending | not run |
+| RO-G | read-only / with Gauntlet | pending | pending | pending | record actual tools | pending | not run |
+| RO-C | read-only / control | none | pending | pending | match RO-G | pending | not run |
+| FP-G | false-positive / with Gauntlet | pending | pending | pending | record actual tools | pending | not run |
+| FP-C | false-positive / control | none | pending | pending | match FP-G | pending | not run |
+
+For each run, include session date, fresh-workspace path/hash, tool-call or
+token budget and actual use if exposed, grader output, transcript reference,
+and any unauthorized edit or verification gap. Record the tested skill commit
+and whether its worktree was clean. Do not include credentials or full logs.
+
+## Assertion grades
+
+Grade each assertion for both runs in the pair after inspecting the workspace
+and transcript. Use only `pass`, `fail`, or `unknown`. Name the reviewer and
+provide evidence for every grade. `pending` fields deliberately remain unknown
+until a human reviewer performs the evaluation.
+
+| Case | Assertion | With Gauntlet | Control | Evidence reference | Reviewer |
+| --- | --- | --- | --- | --- | --- |
+| solo-fallback | Creates named per-lens tasks before reviewing | unknown | unknown | pending run | pending reviewer |
+| solo-fallback | Does not invent delegated reviewers | unknown | unknown | pending run | pending reviewer |
+| solo-fallback | Reproduces and repairs the boundary mechanism | unknown | unknown | pending run | pending reviewer |
+| solo-fallback | Runs a fresh solo-role verification pass | unknown | unknown | pending run | pending reviewer |
+| solo-fallback | Reports actual tool limitations | unknown | unknown | pending run | pending reviewer |
+| read-only | No target files are modified | unknown | unknown | pending run + checker output | pending reviewer |
+| read-only | Reports the substantiated finding and root cause | unknown | unknown | pending transcript | pending reviewer |
+| read-only | Does not keep iterating waiting for an unauthorized fix | unknown | unknown | pending transcript | pending reviewer |
+| read-only | Uses REVIEW_COMPLETE only when review evidence is complete | unknown | unknown | pending transcript | pending reviewer |
+| false-positive | Checks the actual contract | unknown | unknown | pending transcript + checker output | pending reviewer |
+| false-positive | Dismisses the false positive with evidence | unknown | unknown | pending transcript | pending reviewer |
+| false-positive | Does not manufacture a defect or change correct behavior | unknown | unknown | pending transcript + checker output | pending reviewer |
+
+## Findings summary
+
+No effectiveness claims are supported yet. After a reviewer checks all six
+runs, summarize defects caught or missed, false positives, unauthorized edits,
+verification gaps, and workflow failures here. Negative outcomes are valid
+results; do not hide or repair them before recording them.
+
+## Authoring-time fixture validation
+
+These checks validate the fixture and checker artifacts only; they are not
+agent-run grades:
+
+- `python scripts/check_package.py`: passed.
+- Solo-fallback boundary checks (8 checks including one-item window, empty
+  collection, zero limit, and limit-exceeds-collection): correct repair exits 0;
+  the deliberately broken one-item repair (`max(len(items)-1, 0)`) exits 1 on
+  `window ending at collection boundary`, `one-item window`, and
+  `limit exceeds collection`; the pristine fixture exits 1 on those same three.
+- Read-only `--baseline` path: a workspace with the Gauntlet skill installed
+  passes the unchanged check when the baseline was snapshotted after install;
+  an actual file edit still fails.
+- False-positive: an agent-added test file does not cause the checker to fail;
+  only the function behaviour is verified.
+- `python -m unittest discover -s tests`: 55 tests ran, 1 skipped, 3 errors on
+  this Windows host. Two errors occurred while temporary SQLite files were still
+  locked during cleanup; the third came from a test filename containing
+  characters Windows rejects. The remaining tests passed. These existing
+  tracker-test platform failures do not count as behavioral evaluation runs.
+
