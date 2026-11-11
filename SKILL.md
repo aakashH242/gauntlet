@@ -1,24 +1,25 @@
 ---
 name: gauntlet
-description: "Evidence-driven adversarial review and root-cause repair of code, designs, APIs, infrastructure, tests, and agent workflows. Use for deep reviews, red-team reviews, edge-case audits, production-readiness checks, or requests to find and fix defects iteratively. Supports sub-agents or a tracked solo workflow. Not for ordinary implementation or cosmetic edits unless explicitly invoked."
+description: "Evidence-driven adversarial review and root-cause repair. Use for deep reviews, red-team reviews, edge-case audits, production-readiness checks, performance-optimization scopes or requests to find and fix defects iteratively. Supports sub-agents or a tracked solo workflow."
 compatibility: "Works with or without sub-agents, shell access, or network access. Optional local tracker requires Python 3.10+ with sqlite3; no third-party packages. Tool availability and permissions come from the host."
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   specification-checked: "2026-10-07"
 ---
 
 # Gauntlet
 
-Make the work withstand attempts to falsify its requirements, invariants, and safety claims. Produce evidence, not a quota of criticisms. Repair underlying mechanisms when authorized; never claim that all possible defects are absent.
+Make the work withstand attempts to falsify its requirements, invariants, performance, production-readiness and safety claims. 
+Produce evidence, not a quota of criticisms. Repair underlying mechanisms when authorized; never claim that all possible defects are absent.
 
 ## Start here
 
-1. Establish **target, scope, intended behavior, revision, and authority**. Inspect applicable project instructions and the actual artifact. Preserve unrelated changes. A request to review is read-only by default; a request to review **and fix** permits bounded local repairs, not deployments or unrelated rewrites.
+1. Establish **target, scope, intended behavior, expected performance, revision, and authority**. Inspect applicable project instructions and the actual artifact. Preserve unrelated changes. A request to review is read-only by default; a request to review **and fix** permits bounded local repairs, not deployments or unrelated rewrites.
 2. Identify available capabilities: artifact reads, local execution, network, task tracking, and real sub-agent tools. Use only tools actually exposed by the host. Missing sub-agents never cancel this skill.
 3. Read [triage](references/triage.md). Select risk tier, relevant review lenses, required checks, and a finite budget. Record why excluded lenses do not apply. Do not load every reference.
 4. Create a persistent tracker **before the first review**. Use a host task tool, the optional [local tracker](references/tracker.md), or [run template](templates/run.md). With no writable storage, maintain the same compact state in the conversation and label it non-persistent.
-5. Capture a baseline: current errors, relevant tests, exact target revision including uncommitted work, and known environmental blockers. Do not attribute pre-existing failures to the patch without evidence.
+5. Capture a baseline: current errors, relevant tests, baseline performance, exact target revision including uncommitted work, and known environmental blockers. Do not attribute pre-existing failures to the patch without evidence.
 
 ## Core loop
 
@@ -43,10 +44,10 @@ In review-only mode, stop after the scoped review and report substantiated findi
 These are Gauntlet defaults, **not research-established optimal counts**. A round is a completed selected-lens attack and triage pass, including repair/verification when authorized; it is not a tool call or each sub-agent's response.
 
 | Tier | Typical target | Maximum rounds | Required clean re-attacks in repair mode |
-| --- | --- | ---: | ---: |
-| focused | Small, low-impact, reversible change | 2 | 1 |
-| standard | Normal feature or multi-file change | 4 | 1 |
-| critical | Auth, money, destructive data changes, cross-tenant boundaries, major concurrency or safety risk | 6 | 2, with different attack angles |
+| --- | --- |---------------:|-----------------------------------------:|
+| focused | Small, low-impact, reversible change |              3 |          2, with different attack angles |
+| standard | Normal feature or multi-file change |              6 |          3, with different attack angles |
+| critical | Auth, money, destructive data changes, cross-tenant boundaries, major concurrency or safety risk |             16 |          8, with different attack angles |
 
 A clean re-attack requires completed selected-lens tasks, applicable checks on the final snapshot, no newly substantiated defects, and no unresolved candidates, confirmed defects, or unverified fixes. It cannot be the same round that changed the target. An approved low/medium-risk exception remains an exception, never a clean bill of health.
 
