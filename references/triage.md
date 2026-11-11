@@ -24,11 +24,12 @@ Every run checks specification consistency, changed behavior, assumptions, evide
 | User input, identities, permissions, file/network access | security-privacy | Trust-boundary violations, tenant isolation, canonicalization, sensitive data |
 | DB writes, migrations, async jobs, retries, shared state | reliability-data | Partial failure, atomicity, idempotency, ordering, recovery |
 | Browser/app views or interactive flows | frontend-accessibility | Racey state, error/retry UX, keyboard access, semantic controls |
-| Hot paths, queues, caches, deploys, infra | performance-operations | Resource bounds, backpressure, rollback, diagnosability |
+| Browser/app views or interactive flows with large or variable data, frequent updates, animations/visualizations, expensive client-side transformations, or noticeable latency | frontend-accessibility **and** performance-operations | UI state and accessibility plus the performance optimization-pattern audit in [Performance and operations](performance-operations.md) |
+| Hot paths, large inputs, repeated work, queues, caches, deploys, infra | performance-operations | Resource bounds, work amplification, reuse/indexing/incremental processing, working-set reduction, batching, backpressure, rollback, diagnosability |
 | Prompts, skills, RAG, tools, model-based decisions | ai-agents | Injection, permission boundaries, evidence quality, eval leakage, termination |
 | Architecture, plans, prose claims, experiments | specifications-research | Missing requirements, counterexamples, sources, uncertainty, falsifiability |
 
-Lenses are not mutually exclusive. A payment webhook plausibly needs correctness, security, reliability, and operations. A spelling-only edit does not need a database race audit. Record a reason for each relevant-looking lens that you omit. Add a domain-specific task when the matrix misses a real risk; these categories are routing aids, not a claim of universal coverage.
+Lenses are not mutually exclusive. A payment webhook plausibly needs correctness, security, reliability, and operations. A data-heavy interactive UI needs both frontend/accessibility and performance/operations review; do not treat rendering cost as outside the performance lens. A spelling-only edit does not need a database race audit. Record a reason for each relevant-looking lens that you omit. Add a domain-specific task when the matrix misses a real risk; these categories are routing aids, not a claim of universal coverage.
 
 ## Select verification before repair
 
