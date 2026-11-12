@@ -4,7 +4,7 @@ Trigger: persistence, migrations, queues, retries, timeouts, shared state, exter
 
 ## Map durable state and commit boundaries
 
-Write the operation as a sequence of reads, writes, external calls, acknowledgments, and commits. Ask what survives if the process stops between each pair. Identify the authoritative state and the invariant joining records. Determine which steps can be retried and what identifies the same logical operation.
+Write the operation as a sequence of reads, writes, external calls, acknowledgments, and commits. Ask what survives if the process stops between each pair. Identify the authoritative state and the invariant joining records. Determine which steps can be retried and what identifies the same logical operation. For resources shared across modules or processes, identify the owner, all actors that can invalidate or replace the resource, and the consumers that may still hold references or have work in flight. A local close/cleanup path does not cover an external owner that can invalidate the resource without coordinating with its consumers.
 
 Inject failure before and after durable writes, acknowledgment, message publication, and external side effects. Check crash recovery, repeated delivery, lost responses after successful commit, reordered callbacks, delayed old writes, lease expiry, and cancellation after partial success. An error response must not imply rollback when the operation already committed.
 

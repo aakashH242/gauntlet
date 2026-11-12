@@ -20,6 +20,8 @@ place `grading/`, `results.md`, or host-side run evidence in that workspace.
 
 `cases.json` contains self-contained scenario briefs and observable acceptance assertions. Supply the described local fixture/environment to the agent rather than claiming access to a nonexistent repository. Keep hazardous or external actions disabled and use fake data.
 
+The `external-resource-invalidation` case checks whether the agent traces invalidation by a parent/host or sibling owner, including pending work and recreation; it is an evaluation specification, not an executed benchmark until a run is recorded.
+
 Compare the same agent with and without Gauntlet, matching tools, target artifacts, and total budget. Include clean artifacts; reward correct dismissal and a justified zero-findings result. Keep held-out variants out of prompt tuning. Grade findings against independently established defects and verified test behavior, not the skill's own ledger verdict.
 
 Record scope, model/version, host/version, mode, budget, tokens/tool calls, delegation availability, true/false positives, severity calibration, test-oracle quality, patch validity, collateral changes, root-cause generalization, permissions respected, and termination behavior. Have a reviewer inspect failure cases and a sample of passes.
