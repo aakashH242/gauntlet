@@ -4,7 +4,7 @@ description: "Evidence-driven adversarial review and root-cause repair. Use for 
 compatibility: "Works with or without sub-agents, shell access, or network access. Optional local tracker requires Python 3.10+ with sqlite3; no third-party packages. Tool availability and permissions come from the host."
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   specification-checked: "2026-10-07"
 ---
 
@@ -15,7 +15,7 @@ Produce evidence, not a quota of criticisms. Repair underlying mechanisms when a
 
 ## Start here
 
-1. Establish **target, scope, intended behavior, expected performance, revision, and authority**. Inspect applicable project instructions and the actual artifact. Preserve unrelated changes. A request to review is read-only by default; a request to review **and fix** permits bounded local repairs, not deployments or unrelated rewrites.
+1. Establish **target, scope, intended behavior, expected performance, revision, and authority**. Inspect applicable project instructions and the actual artifact. Preserve unrelated changes. A request to review is read-only by default; a request to review **and fix** permits bounded local repairs, not deployments or unrelated rewrites. For retained references, cached values, handles, observers, subscriptions, or ongoing work, also map who owns the resource, every in-scope path that can mutate, replace, detach, or invalidate it, and every consumer that may outlive that transition. Do not inspect only the component that created or cached it.
 2. Identify available capabilities: artifact reads, local execution, network, task tracking, and real sub-agent tools. Use only tools actually exposed by the host. Missing sub-agents never cancel this skill.
 3. Read [triage](references/triage.md). Select risk tier, relevant review lenses, required checks, and a finite budget. Record why excluded lenses do not apply. Do not load every reference.
 4. Create a persistent tracker **before the first review**. Use a host task tool, the optional [local tracker](references/tracker.md), or [run template](templates/run.md). With no writable storage, maintain the same compact state in the conversation and label it non-persistent.
@@ -27,13 +27,13 @@ Produce evidence, not a quota of criticisms. Repair underlying mechanisms when a
 
 For every round:
 
-1. Map the affected contracts, state transitions, trust boundaries, dependencies, and downstream consumers. Review the specification itself; passing a faulty test suite is not enough.
+1. Map the affected contracts, state transitions, trust boundaries, dependencies, and downstream consumers. Review the specification itself; passing a faulty test suite is not enough. For retained resources, map the ownership boundary end to end: creator/owner, backing resource or container, all writers and external invalidators (including parent/host and sibling modules), consumers, cleanup/cancellation, and recreation/rebinding paths.
 2. Assign selected lenses to independent reviewers when useful and available. Otherwise perform separate, named solo passes. Read [orchestration](references/orchestration.md) when delegating or switching to solo mode. Keep a single orchestrator responsible for state and integration.
 3. Search for counterexamples, not stylistic disagreement. For each candidate, record location, violated requirement, triggering conditions, impact, evidence, and uncertainty using [finding](templates/finding.md). A plausible suspicion is not a confirmed defect.
 4. Reproduce or substantiate the claim. Prefer an executable counterexample; otherwise use a precise source trace, explicit model, authoritative reference, or bounded proof. Challenge the test oracle and the critic's own assumptions. Dismiss false positives with evidence; never implement a fix merely to satisfy another agent.
-5. For confirmed findings, read [root-cause repair](references/root-cause.md). Trace **symptom → mechanism → enabling condition → missing/incorrect invariant**. Search for siblings sharing the mechanism. Choose the smallest sufficient repair boundary, not necessarily the fewest changed lines.
+5. For confirmed findings, read [root-cause repair](references/root-cause.md). Trace **symptom → mechanism → enabling condition → missing/incorrect invariant**. Search for siblings sharing the mechanism and all cross-boundary writers, replacers, and invalidators of affected resources—not only callers inside the owning component. Choose the smallest sufficient repair boundary, not necessarily the fewest changed lines.
 6. In repair mode, apply one causally coherent fix at a time. Add a regression that distinguishes the original defect from the corrected behavior, plus a neighboring-case or property check where applicable. Do not weaken assertions, swallow exceptions, add arbitrary sleeps, or disable checks merely to obtain green results.
-7. Follow [verification](references/verification.md). Bind evidence to the actual changed snapshot. Re-review the patch, affected contracts, and new risks introduced by the fix. Prefer a verifier that did not author it; label solo reinspection honestly when no independent agent exists.
+7. Follow [verification](references/verification.md). Bind evidence to the actual changed snapshot. Re-review the patch, affected contracts, and new risks introduced by the fix. For retained resources, re-attack external replacement/invalidation paths, pending callbacks or work, cleanup ordering, and rebinding after recreation. Prefer a verifier that did not author it; label solo reinspection honestly when no independent agent exists.
 8. Update tasks, findings, check results, revision, and remaining budget. A meaningful target change invalidates affected evidence and the clean-pass streak. Log blockers instead of converting missing evidence into success.
 9. Continue only for a concrete reason: unresolved material findings, untested impact, contradictory evidence, a changed invariant, or a new attack strategy. Repeating the same prompt is not a fresh review. Use [closure](references/closure.md) to finish, escalate, or stop at budget.
 
@@ -67,8 +67,8 @@ Read only the row triggered by the actual work; return here rather than followin
 | Executable logic, APIs, contracts, libraries | [Correctness and API](references/correctness-api.md) |
 | Auth, trust boundaries, hostile input, dependencies | [Security and privacy](references/security-privacy.md) |
 | Databases, queues, retries, time, concurrency, migrations | [Reliability and data](references/reliability-data.md) |
-| UI, accessibility, interaction state, clients | [Frontend and accessibility](references/frontend-accessibility.md) |
-| Resources, performance, deployments, operations | [Performance and operations](references/performance-operations.md) |
+| UI, accessibility, interaction state, clients, parent/host-driven replacement or unmount | [Frontend and accessibility](references/frontend-accessibility.md) |
+| Resources, performance, retained state, cross-component invalidation, deployments, operations | [Performance and operations](references/performance-operations.md) |
 | LLMs, tools, RAG, evaluation, agent skills | [AI and agent systems](references/ai-agents.md) |
 | Plans, specifications, documentation, research claims | [Specifications and research](references/specifications-research.md) |
 | Optional persistent state and deterministic exit gates | [Tracker CLI](references/tracker.md) |

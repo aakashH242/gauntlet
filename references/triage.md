@@ -23,13 +23,13 @@ Every run checks specification consistency, changed behavior, assumptions, evide
 | Branches, parsing, library code, API behavior | correctness-api | Invariants, input partitions, caller compatibility, error semantics |
 | User input, identities, permissions, file/network access | security-privacy | Trust-boundary violations, tenant isolation, canonicalization, sensitive data |
 | DB writes, migrations, async jobs, retries, shared state | reliability-data | Partial failure, atomicity, idempotency, ordering, recovery |
-| Browser/app views or interactive flows | frontend-accessibility | Racey state, error/retry UX, keyboard access, semantic controls |
+| Browser/app views or interactive flows | frontend-accessibility | Racey state, error/retry UX, keyboard access, semantic controls, parent/host-driven replacement, unmount and stale references |
 | Browser/app views or interactive flows with large or variable data, frequent updates, animations/visualizations, expensive client-side transformations, or noticeable latency | frontend-accessibility **and** performance-operations | UI state and accessibility plus the performance optimization-pattern audit in [Performance and operations](performance-operations.md) |
-| Hot paths, large inputs, repeated work, queues, caches, deploys, infra | performance-operations | Resource bounds, work amplification, reuse/indexing/incremental processing, working-set reduction, batching, backpressure, rollback, diagnosability |
+| Hot paths, large inputs, repeated work, retained/cached resources, queues, deploys, infra | performance-operations | Resource bounds, work amplification, reuse/indexing/incremental processing, working-set reduction, batching, cross-component ownership and invalidation paths, backpressure, rollback, diagnosability |
 | Prompts, skills, RAG, tools, model-based decisions | ai-agents | Injection, permission boundaries, evidence quality, eval leakage, termination |
 | Architecture, plans, prose claims, experiments | specifications-research | Missing requirements, counterexamples, sources, uncertainty, falsifiability |
 
-Lenses are not mutually exclusive. A payment webhook plausibly needs correctness, security, reliability, and operations. A data-heavy interactive UI needs both frontend/accessibility and performance/operations review; do not treat rendering cost as outside the performance lens. A spelling-only edit does not need a database race audit. Record a reason for each relevant-looking lens that you omit. Add a domain-specific task when the matrix misses a real risk; these categories are routing aids, not a claim of universal coverage.
+Lenses are not mutually exclusive. A payment webhook plausibly needs correctness, security, reliability, and operations. A data-heavy interactive UI needs both frontend/accessibility and performance/operations review; do not treat rendering cost as outside the performance lens. When a component retains references or work against a parent-owned/shared resource, inspect both its local cleanup and every external replacement/invalidation path. A spelling-only edit does not need a database race audit. Record a reason for each relevant-looking lens that you omit. Add a domain-specific task when the matrix misses a real risk; these categories are routing aids, not a claim of universal coverage.
 
 ## Select verification before repair
 

@@ -121,6 +121,20 @@
         "Can return zero findings",
         "Does not rewrite unrelated text or exhaust all rounds unnecessarily"
       ]
+    },
+    {
+      "id": "external-resource-invalidation",
+      "scenario": "Review and repair a small interactive component that caches references to child resources and schedules recurring work. A parent/host module can replace the shared container during loading or error handling without invoking the component's local cleanup method. Supply the owner code, all container replacement paths, a controllable callback scheduler, and a fake DOM/resource implementation.",
+      "assertions": [
+        "Identifies the component/resource owner and the separate parent/host owner of the backing container",
+        "Traces every relevant replacement/invalidation path, including loading/error fallback and retry/recreation, rather than inspecting only the component's clear/destroy methods",
+        "Recognizes that local cleanup is insufficient when an external owner can replace the backing resource without invoking it",
+        "Defines a lifecycle handoff that stops/cancels pending work and releases stale references before replacement, then reacquires valid references after recreation",
+        "Adds a deterministic regression that triggers external replacement while a callback is pending and proves no stale resource is updated and no obsolete work continues",
+        "Verifies that the replacement view and a later recreated component still work, and that cleanup is idempotent",
+        "Does not rely solely on a connectivity/generation guard while leaving ownership and cancellation uncoordinated",
+        "Preserves unrelated behavior and does not broaden the repair into an unnecessary framework rewrite"
+      ]
     }
   ]
 }

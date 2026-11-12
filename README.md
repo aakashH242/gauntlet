@@ -4,6 +4,8 @@
 
 An agent skill for adversarial review and root-cause repair of code, designs, APIs, infrastructure, and agent workflows. It directs the agent to look for counterexamples, substantiate findings, and re-attack repairs before declaring completion.
 
+Gauntlet also checks lifecycle boundaries across owners: agents must trace not only who creates or caches a resource, but every parent, host, sibling, or external path that can invalidate it while consumers or callbacks are still active. See [the changelog](CHANGELOG.md) for versioned changes.
+
 Reviews are read-only unless you authorize fixes. Gauntlet works with sub-agents or separate solo review passes; neither reviewer agreement nor a green test suite is treated as proof that all defects are absent.
 
 ## Install

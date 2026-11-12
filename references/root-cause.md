@@ -6,6 +6,12 @@ Write the observed symptom, minimum trigger, failing mechanism, enabling conditi
 
 Ask a counterfactual: **if this mechanism were corrected, would the failure still be possible through another caller or schedule?** Search for sibling uses of the same primitive and duplicate checks. Bound that search by the actual causal mechanism, not an unrelated full-codebase rewrite.
 
+## Trace ownership and invalidation across boundaries
+
+When a defect involves a retained reference, cached value, handle, observer, subscription, pending callback, or other long-lived resource, do not stop at the component or function that created it. Identify the resource owner and every other actor that can mutate, replace, detach, close, reset, or invalidate the backing resource. Trace consumers that may continue after that external transition, including error/loading fallbacks, navigation, parent/host updates, sibling modules, retries, and shutdown paths.
+
+The missing invariant may be a lifecycle contract between two owners: the invalidating owner must notify or coordinate with consumers before replacement; consumers must stop/cancel and release obsolete state; and a recreated resource must be rebound before work resumes. Search for all equivalent invalidation paths and test one initiated outside the original component. A local cleanup method is not a complete fix if external owners can bypass it.
+
 ## Choose the smallest sufficient boundary
 
 Prefer enforcing an invariant at its owner. A database uniqueness rule may need a constraint and a caller-compatible conflict path; a local precheck alone may still race. A retry duplication issue may require an idempotency key plus durable deduplication at the commit boundary, not a sleep. A tenant leak may need tenant-scoped authorization in a shared data access path, not hiding one UI button. The correct design depends on the actual system; these are mechanisms to investigate, not mandatory prescriptions.
